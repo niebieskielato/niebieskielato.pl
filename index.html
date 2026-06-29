@@ -13,16 +13,82 @@
             background-color: #f0f8ff;
             color: #333;
         }
+        /* Kontener na nagłówek na pełną szerokość tła */
+        .header-wrapper {
+            background-color: #003580;
+            width: 100%;
+        }
         header {
             background-color: #003580;
             color: white;
-            text-align: center;
             padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        .header-text {
+            text-align: left;
         }
         h1 {
             margin: 0;
             font-size: 2.5rem;
         }
+        header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        /* Odznaka Booking.com na wzór Traveller Review Awards 2026 */
+        .booking-badge {
+            background-color: #006ce4; 
+            color: white;
+            padding: 15px 20px;
+            border-radius: 18px;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            min-width: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+        .badge-brand {
+            font-family: 'BlinkMacSystemFont', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            margin-bottom: 2px;
+        }
+        .badge-title {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        .badge-score-container {
+            background-color: #0053b3;
+            border-radius: 12px;
+            padding: 8px;
+            text-align: center;
+            align-self: flex-start;
+            min-width: 70px;
+        }
+        .badge-score {
+            font-size: 2.2rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+        .badge-out-of {
+            font-size: 0.65rem;
+            font-weight: bold;
+            margin-top: 2px;
+            opacity: 0.9;
+        }
+
         .container {
             max-width: 800px;
             margin: 2rem auto;
@@ -101,14 +167,52 @@
             font-size: 0.9rem;
             color: #777;
         }
+
+        /* Responsywność dla urządzeń mobilnych */
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+            .header-text {
+                text-align: center;
+            }
+            .booking-badge {
+                align-items: center;
+                text-align: center;
+            }
+            .badge-score-container {
+                align-self: center;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .main-image {
+                height: 300px; /* Nieco niższe zdjęcie na telefonach, by lepiej wyglądało */
+            }
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Niebieskie Lato - Mieroszyno</h1>
-        <p>Wspaniały wypoczynek w pobliżu Jastrzębiej Góry</p>
-    </header>
+    <div class="header-wrapper">
+        <header>
+            <div class="header-text">
+                <h1>Niebieskie Lato - Mieroszyno</h1>
+                <p>Wspaniały wypoczynek w pobliżu Jastrzębiej Góry</p>
+            </div>
+            
+            <div class="booking-badge">
+                <div class="badge-brand">Booking.com</div>
+                <div class="badge-title">Traveller Review Awards 2026</div>
+                <div class="badge-score-container">
+                    <div class="badge-score">9,8</div>
+                    <div class="badge-out-of">out of 10</div>
+                </div>
+            </div>
+        </header>
+    </div>
 
     <div class="container">
         <img id="slider" src="foto1.jpg" alt="Niebieskie Lato Mieroszyno" class="main-image">
@@ -159,11 +263,10 @@
     </footer>
 
     <script>
-        // Jeśli zdjęcia są w jakimś folderze, np. "img/", wpisz to poniżej między cudzysłowy.
-        // Jeśli są w tym samym miejscu co ten plik HTML, zostaw puste "".
+        // Jeśli Twoje zdjęcia są w folderze, np. "img/", wpisz to tutaj: "img/". Jeśli są obok pliku HTML, zostaw puste "".
         const folder = ""; 
 
-        // Automatyczne wygenerowanie tablicy od foto1.jpg do foto26.jpg
+        // Generowanie listy 26 zdjęć od foto1.jpg do foto26.jpg
         const images = [];
         for (let i = 1; i <= 26; i++) {
             images.push(`${folder}foto${i}.jpg`);
@@ -175,6 +278,7 @@
         function changeImage() {
             const nextIndex = (currentIndex + 1) % images.length;
             
+            // Wstępne ładowanie do pamięci podręcznej podręcznej przed wyświetleniem (eliminuje mruganie)
             const tempImg = new Image();
             tempImg.src = images[nextIndex];
 
@@ -185,18 +289,17 @@
                     currentIndex = nextIndex;
                     sliderElement.src = images[currentIndex];
                     sliderElement.style.opacity = 1;
-                }, 400); // Czas trwania wygaszania (zgodny z CSS)
+                }, 400); // 400ms – czas trwania efektu fade-out w CSS
             };
             
-            // Obsługa błędu, jeśli któreś zdjęcie się nie załaduje (np. brakuje pliku fotoX.jpg)
-            // Dzięki temu skrypt nie zawiesi się, tylko przejdzie do kolejnego zdjęcia
+            // Jeśli system napotka błąd pliku (np. brak zdjęcia na serwerze), natychmiast przeskoczy do następnego
             tempImg.onerror = function() {
                 currentIndex = nextIndex;
                 changeImage();
             };
         }
 
-        // Zmiana zdjęcia co 4 sekundy
+        // Czas zmiany zdjęcia ustawiony na 4 sekundy (4000ms)
         setInterval(changeImage, 4000);
     </script>
 
