@@ -30,10 +30,12 @@
         }
         .main-image {
             width: 100%;
-            max-height: 450px;
+            height: 450px;
             object-fit: cover;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: opacity 0.4s ease-in-out; 
+            opacity: 1;
         }
         .section {
             background: white;
@@ -109,8 +111,7 @@
     </header>
 
     <div class="container">
-        <!-- Główne zdjęcie obiektu -->
-        <img src="foto.jpg" alt="Niebieskie Lato Mieroszyno" class="main-image">
+        <img id="slider" src="foto1.jpg" alt="Niebieskie Lato Mieroszyno" class="main-image">
 
         <div class="section">
             <h2>O obiekcie</h2>
@@ -131,21 +132,18 @@
         <div class="section">
             <h2>Autentyczne opinie z Booking.com</h2>
             
-            <!-- Opinia 1 -->
             <div class="review">
                 <span class="review-score">10 / 10</span>
                 <p class="review-text">"Czyściutko, apartament zawierał wszelkie udogodnienia niezbędne do wypoczynku, cisza, spokój i przemili właściciele."</p>
                 <span class="review-author">— Dorota</span>
             </div>
 
-            <!-- Opinia 2 -->
             <div class="review">
                 <span class="review-score">9,0 / 10</span>
                 <p class="review-text">"Duży apartament a w nim wszystko co potrzeba :-) Dwa pokoje, dwie łazienki, kuchnia, taras :-) Miejscowosc leży jakieś dwa, trzy kilometry przed Jastrzębia Góra więc jest tu cisza i spokój :-)"</p>
                 <span class="review-author">— Justyna</span>
             </div>
 
-            <!-- Opinia 3 -->
             <div class="review">
                 <span class="review-score">10 / 10</span>
                 <p class="review-text">"Gospodarze czekali na nas pomimo bardzo później pory (23:00 dopiero dotarłyśmy na miejsce)"</p>
@@ -153,17 +151,54 @@
             </div>
         </div>
 
-        <!-- Przycisk kierujący do Booking.com -->
         <a href="https://www.booking.com/hotel/pl/niebieskie-lato.pl.html" target="_blank" class="booking-btn">Zobacz profil na Booking.com</a>
-
-        <!-- DRUGIE ZDJĘCIE NA DOLE STRONY -->
-        <div style="margin-top: 2rem;">
-            <img src="foto2.jpg" alt="Niebieskie Lato Mieroszyno" class="main-image">
     </div>
 
     <footer>
         <p>&copy; Niebieskie Lato - Mieroszyno. Strona informacyjna stworzona na bazie danych Booking.com.</p>
     </footer>
+
+    <script>
+        // Jeśli zdjęcia są w jakimś folderze, np. "img/", wpisz to poniżej między cudzysłowy.
+        // Jeśli są w tym samym miejscu co ten plik HTML, zostaw puste "".
+        const folder = ""; 
+
+        // Automatyczne wygenerowanie tablicy od foto1.jpg do foto26.jpg
+        const images = [];
+        for (let i = 1; i <= 26; i++) {
+            images.push(`${folder}foto${i}.jpg`);
+        }
+
+        let currentIndex = 0;
+        const sliderElement = document.getElementById("slider");
+
+        function changeImage() {
+            const nextIndex = (currentIndex + 1) % images.length;
+            
+            const tempImg = new Image();
+            tempImg.src = images[nextIndex];
+
+            tempImg.onload = function() {
+                sliderElement.style.opacity = 0;
+
+                setTimeout(() => {
+                    currentIndex = nextIndex;
+                    sliderElement.src = images[currentIndex];
+                    sliderElement.style.opacity = 1;
+                }, 400); // Czas trwania wygaszania (zgodny z CSS)
+            };
+            
+            // Obsługa błędu, jeśli któreś zdjęcie się nie załaduje (np. brakuje pliku fotoX.jpg)
+            // Dzięki temu skrypt nie zawiesi się, tylko przejdzie do kolejnego zdjęcia
+            tempImg.onerror = function() {
+                currentIndex = nextIndex;
+                changeImage();
+            };
+        }
+
+        // Zmiana zdjęcia co 4 sekundy
+        setInterval(changeImage, 4000);
+    </script>
 
 </body>
 </html>
